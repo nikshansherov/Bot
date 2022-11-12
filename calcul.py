@@ -1,3 +1,4 @@
+# Мой первый телеграмм бот
 import telebot
 from settings import TOKEN
 from logger import log
