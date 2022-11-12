@@ -1,6 +1,10 @@
 import telebot
+from settings import TOKEN
 
-bot = telebot.TeleBot('5783446999:AAE79quCyHNP-jDU8JvvVXxvLnljBUdUAyI')
+bot = telebot.TeleBot(TOKEN)
+
+value = ''
+old_value = ''
 
 keyboard = telebot.types.InlineKeyboardMarkup()
 keyboard.row(   telebot.types.InlineKeyboardButton(' ', callback_data='no'),
@@ -31,6 +35,40 @@ keyboard.row(   telebot.types.InlineKeyboardButton(' ', callback_data='no'),
 
 @bot.message_handler(commands=['start', 'calcul'])
 def getMessage(message):
-    bot.send_message(message.from_user.id, 'Привет!', reply_markup=keyboard)
+    global value
+    if value == '':
+        bot.send_message(message.from_user.id, '0', reply_markup=keyboard)
+    else:
+        bot.send_message(message.from_user.id, value, reply_markup=keyboard)
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_func(query):
+    global value, old_value
+    data = query.data
+    if data == 'no':
+        pass
+    elif data == 'C':
+        value = ''
+    elif data == '<=':
+        if value != '':
+            value = value[:len(value) - 1]
+    elif data == '=':
+        try:
+            value = str(eval(value))
+        except:
+            value = 'Ошибка!'
+    else:
+        value += data
+    if (value != old_value and value != '') or ('0' != old_value and value == ''):
+        if value == '':
+            bot.edit_message_text(chat_id=query.message.chat.id, message_id=query.message.message_id,
+                                  text='0', reply_markup=keyboard)
+            old_value = '0'
+        else:
+            bot.edit_message_text(chat_id=query.message.chat.id, message_id=query.message.message_id,
+                                  text=value, reply_markup=keyboard)
+            old_value = value
+    if value == 'Ошибка!':
+        value = ''
 
 bot.polling(none_stop=False, interval=0)
