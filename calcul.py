@@ -1,8 +1,8 @@
 import telebot
 from settings import TOKEN
+from logger import log
 
 bot = telebot.TeleBot(TOKEN)
-
 value = ''
 old_value = ''
 
@@ -32,7 +32,6 @@ keyboard.row(   telebot.types.InlineKeyboardButton(' ', callback_data='no'),
                 telebot.types.InlineKeyboardButton(',', callback_data='.'),
                 telebot.types.InlineKeyboardButton('=', callback_data='='))
 
-
 @bot.message_handler(commands=['start', 'calcul'])
 def getMessage(message):
     global value
@@ -45,6 +44,7 @@ def getMessage(message):
 def callback_func(query):
     global value, old_value
     data = query.data
+    log(data)
     if data == 'no':
         pass
     elif data == 'C':
@@ -55,8 +55,10 @@ def callback_func(query):
     elif data == '=':
         try:
             value = str(eval(value))
+            log(value)
         except:
             value = 'Ошибка!'
+            log(value)
     else:
         value += data
     if (value != old_value and value != '') or ('0' != old_value and value == ''):
