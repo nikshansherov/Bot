@@ -8,7 +8,7 @@ value = ''
 old_value = ''
 
 keyboard = telebot.types.InlineKeyboardMarkup()
-keyboard.row(   telebot.types.InlineKeyboardButton(' ', callback_data='no'),
+keyboard.row(   telebot.types.InlineKeyboardButton('√', callback_data='**0.5'),
                 telebot.types.InlineKeyboardButton('C', callback_data='C'),
                 telebot.types.InlineKeyboardButton('<=', callback_data='<='),
                 telebot.types.InlineKeyboardButton('/', callback_data='/'))
